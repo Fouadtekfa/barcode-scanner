@@ -5,7 +5,6 @@ import { Platform, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import Home from './index';
-
 import Scan from './Scan';
 import History from './History';
 import Cart from './Cart';
