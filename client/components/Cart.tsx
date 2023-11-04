@@ -52,7 +52,7 @@ export default function Cart({ navigation }: any) {
                         const localItem = localCart.find(local => local.id === item.id);
                         return {
                             ...item,
-                            quantite: localItem ? localItem.quantite : 1 
+                            quantite: localItem ? localItem.quantite : 0
                         };
                     });
 
@@ -108,7 +108,7 @@ export default function Cart({ navigation }: any) {
                         <View style={styles.itemQuantityContainer}>
                             <Icon
                                 name="remove"
-                                size={35}
+                                size={30}
                                 color="#ff0000"
                                 onPress={() => {
                                     updateProductQuantity(item.id, "decrement");
@@ -117,7 +117,7 @@ export default function Cart({ navigation }: any) {
                             <Text style={styles.itemQuantity}>{item.quantite}</Text>
                             <Icon
                                 name="add"
-                                size={35}
+                                size={30}
                                 color="#00ff00"
                                 onPress={() => {
                                     updateProductQuantity(item.id, "increment");
@@ -125,7 +125,7 @@ export default function Cart({ navigation }: any) {
                             />
                         </View> 
                         <View style={styles.priceContainer}>
-                        <Text style={styles.itemPrice}>{item.quantite * item.price/100}€</Text> 
+                        <Text style={styles.itemPrice}>{item.quantite * item.price/100  }€</Text> 
                         </View>
                         <TouchableOpacity onPress={() => retirerProduit(item.id)}>
                            <Icon name="delete" size={24} color="red" />
@@ -146,7 +146,9 @@ const styles = StyleSheet.create({
       
         
     },
-   
+    scrollView: {
+        flex: 1,
+    },
     itemContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -157,14 +159,14 @@ const styles = StyleSheet.create({
         borderBottomColor: "#ccc",
     },
     itemName: {
+        flex: 2,
         fontSize: 20,
         fontWeight: "bold",
     },
     itemQuantityContainer: {
+        flex : 1,
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between",
-
     },
     itemQuantity: {
         fontSize: 16,
