@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button, ScrollView,TouchableOpacity,Swipeable } from "react-native";
+import { Text, View, StyleSheet, Button, ScrollView,TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import * as SQLite from 'expo-sqlite';
 
@@ -11,7 +11,6 @@ export default function Cart({ navigation }: any) {
         { id: string; name: string; price: number; quantite: number }[]
     >([]);
     const API_URL = "http://192.168.1.62:8080";
-
     useEffect(() => {
         db.transaction(tx => {
             tx.executeSql(
@@ -100,7 +99,7 @@ export default function Cart({ navigation }: any) {
 
   
     return (
-        <View style={styles.container}>
+      <View style={styles.container}>
             <ScrollView style={styles.scrollView}>
                 {Cart.filter(item => item.quantite > 0).map((item) => (
                     <View style={styles.itemContainer} key={item.id}>
@@ -135,6 +134,7 @@ export default function Cart({ navigation }: any) {
             </ScrollView>
             
         </View>
+        
     );
 }
 

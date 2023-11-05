@@ -2,7 +2,8 @@ import { useStripe } from "@stripe/stripe-react-native";
 import Constants from "expo-constants";
 import React, { useEffect, useState } from "react";
 import { Alert, Text, Button, SafeAreaView, View } from "react-native";
-
+import * as SQLite from 'expo-sqlite';
+const db = SQLite.openDatabase('cart1.db');
 export default function CheckoutScreen() {
     const { initPaymentSheet, presentPaymentSheet } = useStripe();
     const [loading, setLoading] = useState(false);
@@ -10,22 +11,64 @@ export default function CheckoutScreen() {
 
     const apiUrl = Constants.expoConfig.extra.apiUrl;
 
-    const userId = "cus_OsVGIEx3fj5v9B";
-    const items = [
+    const userId = "cus_Ow2KB75jrlYdyV";
+    /*const items = [
         {
             "id": 1,
             "amount": 2
         }
-    ];
-
+    ];*/
+   
+    
     const fetchPaymentSheetParams = async () => {
+        let tableau = [];
+       // console.log(tableau);
+        /*
+       await db.transaction(tx => {
+                tx.executeSql('SELECT * FROM cart', [], (_, { rows }) => {
+                const localCart = rows._array;
+             console.log(localCart);
+                tableau = localCart.map( i => {
+                    return {
+                      id: i.id,
+                      amount: i.quantite
+                  }
+                  });
+                  console.log("hola");
+                  console.log(tableau)
+            });
+
+        });*/
+        await new Promise((resolve, reject) => {
+            db.transaction(tx => {
+                tx.executeSql('SELECT * FROM cart', [], (_, { rows }) => {
+                    const localCart = rows._array;
+                    console.log(localCart);
+                    tableau = localCart.map(i => {
+                        return {
+                            id: i.id,
+                            amount: i.quantite
+                        }
+                    });
+                    //console.log("hola");
+                    //console.log(tableau);
+                    resolve(); // Indique que la transaction est terminée
+                });
+            });
+        });
+           // console.log("qulques chose")
+         //   console.log(tableau); 
+        
+
+
+
         const response = await fetch(`${apiUrl}/payments/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "pending_items": items,
+                "pending_items": tableau,
                 "customer_id": userId
             })
         });
@@ -38,6 +81,8 @@ export default function CheckoutScreen() {
             customer,
         };
     };
+
+
 
     const initializePaymentSheet = async () => {
         const {
@@ -61,6 +106,7 @@ export default function CheckoutScreen() {
     };
 
     const openPaymentSheet = async () => {
+        await initializePaymentSheet();
         const { error } = await presentPaymentSheet();
 
         if (error) {
@@ -79,6 +125,7 @@ export default function CheckoutScreen() {
 
             if (response.status == 200) Alert.alert('Success', 'Your order is confirmed!');
         }
+       
     };
 
     useEffect(() => {
@@ -88,10 +135,10 @@ export default function CheckoutScreen() {
     return (
         <SafeAreaView>
             <Text>Payment</Text>
-            <Button
+            <Button 
                 disabled={!loading}
                 title="Checkout"
-                onPress={openPaymentSheet}
+                onPress={openPaymentSheet }
             />
         </SafeAreaView>
     );
