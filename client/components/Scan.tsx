@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Button } from 'react-native';
+import { Text, View, StyleSheet, Button, TextInput } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import * as SQLite from 'expo-sqlite';
 import { useNavigation } from '@react-navigation/native';
-import Cart from './Cart';
 
 const db = SQLite.openDatabase('cart1.db');
 const API_URL = "http://192.168.1.62:8080";
@@ -11,15 +10,18 @@ const API_URL = "http://192.168.1.62:8080";
 export default function Scan() {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
+    const [manualBarcode, setManualBarcode] = useState('');
     const navigation = useNavigation();
-   
+
+    const handleManualBarcodeInput = (text) => {
+      setManualBarcode(text);
+    };
 
     useEffect(() => {
         (async () => {
             const { status } = await BarCodeScanner.requestPermissionsAsync();
             setHasPermission(status === 'granted');
     
-            // Créer la table "cart" si elle n'existe pas
             db.transaction(tx => {
                 tx.executeSql(
                     `CREATE TABLE IF NOT EXISTS cart 
@@ -28,50 +30,54 @@ export default function Scan() {
             });
         })();
     }, []);
+
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             setScanned(false);
         });
-    
+
         return () => {
             unsubscribe();
         };
     }, [navigation]);
-    
-    
 
     const handleBarCodeScanned = async ({ type, data }) => {
         setScanned(true);
-    
+
         try {
-            const response = await fetch(`${API_URL}/items/${data}`);
+            let productId = data;
+            if (!productId && manualBarcode) {
+                productId = manualBarcode;
+            } else if (!productId) {
+                alert("aucun code-barres n'a été saisi");
+                return;
+            }
+
+            const response = await fetch(`${API_URL}/items/${productId}`);
             if (!response.ok) {
-                alert("Produit non trouvé sur le serveur.");
+                alert(" article non trouvé dans le serveur ");
                 return;
             }
-            
+
             const product = await response.json();
-    
+
             if (!product || !product.id) {
-                alert("Produit non trouvé sur le serveur.");
+                alert("article non trouvé dans le serveur ");
                 return;
             }
-    
+
             db.transaction(tx => {
                 tx.executeSql(
                     'SELECT * FROM cart WHERE id = ?',
-                    [data],
+                    [productId],
                     (_, { rows }) => {
                         if (rows.length > 0) {
-                            // L'article est déjà dans le panier. Incrémenter la quantité.
-                           
                             tx.executeSql(
                                 'UPDATE cart SET quantite = quantite + 1 WHERE id = ?',
-                                [data],
+                                [productId],
                                 (_, resultSet) => {
                                     if (resultSet.rowsAffected > 0) {
-                                        alert(`Quantité mise à jour: ${product.name}`);
-
+                                        alert(`Quantité mise à jour +1 : ${product.name}`);
                                     } else {
                                         alert('Erreur lors de la mise à jour de la quantité.');
                                     }
@@ -79,15 +85,14 @@ export default function Scan() {
                                 (_, error) => console.error(error)
                             );
                         } else {
-                            // ajoutez l'article au panier avec une quantité de 1.
                             tx.executeSql(
                                 'INSERT INTO cart (id, quantite) VALUES (?, 1)',
                                 [product.id],
                                 (_, resultSet) => {
                                     if (resultSet.insertId) {
-                                        alert(`Produit ajouté: ${product.name}`);
+                                        alert(`article ajouté : ${product.name}`);
                                     } else {
-                                        alert('erreur lors de l\'ajout du produit.');
+                                        alert('Erreur lors de l\'ajout de l\'article');
                                     }
                                 },
                                 (_, error) => console.error(error)
@@ -97,31 +102,56 @@ export default function Scan() {
                     (_, error) => console.error(error)
                 );
             });
+            setManualBarcode('');
         } catch (error) {
-            console.error("erreur lors de la recherche du produit : " + error);
+            console.error("Erreur lors de la recherche de l\'article : " + error);
         }
     };
 
     if (hasPermission === null) {
         return <Text>Demande de permission d'accès à la caméra</Text>;
     }
-    if (hasPermission === false) {
+    /*if (hasPermission === false) {
         return <Text>Pas d'accès à la caméra</Text>;
+    }*/
+
+    if (hasPermission === false) {
+        return (
+            <View style={styles.container}>
+                <Text>Pas d'accès à la caméra</Text>
+                <TextInput
+                    style={[styles.input, { textAlign: 'center' }]}
+                    placeholder="insérez le code-barres de l'article"
+                    value={manualBarcode}
+                    onChangeText={handleManualBarcodeInput}
+                    keyboardType="numeric"
+                />
+                <Button
+                    title="ajoutez l'article au panier"
+                    onPress={() => {
+                        if (manualBarcode) {
+                            handleBarCodeScanned({ type: '', data: manualBarcode });
+                        }
+                    }}
+                />
+            </View>
+        );
     }
 
     return (
         <View style={styles.container}>
             
          
-         {scanned ? 
-            <Button title={'Scanner à nouveau'} onPress={() => setScanned(false)} /> :
-            <BarCodeScanner
-                onBarCodeScanned={handleBarCodeScanned}
-                   style={StyleSheet.absoluteFillObject}
-            />
-        }
-         
-        </View>
+        {scanned ? 
+           <Button title={'Scanner à nouveau'} onPress={() => setScanned(false)} /> :
+           <BarCodeScanner
+               onBarCodeScanned={handleBarCodeScanned}
+                  style={StyleSheet.absoluteFillObject}
+           />
+       }
+        
+       </View>
+    
     );
 }
 
@@ -131,8 +161,14 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        width: '80%', 
-        marginHorizontal: '10%', 
-        
+        width: '80%',
+        marginHorizontal: '10%',
+    },
+    input: {
+        width: '90%',
+        height: 50,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        marginBottom: 10,
     },
 });
