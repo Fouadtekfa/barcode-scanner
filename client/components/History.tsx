@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, StyleSheet, FlatList, Text } from 'react-native';
 import format from 'date-fns/format';
-
+import Constants from "expo-constants";
+import { USER_ID } from "@env";
+const API_URL = Constants.expoConfig.extra.apiUrl;
 
 const History = () => {
   const [payments, setPayments] = useState([]);
 
   const getPayments = async () => {
     try {
-      const response = await fetch("http://192.168.1.62:8080/payments/cus_OxAy8ekZ5nf5Lr", {
+      const response = await fetch(`${API_URL}/payments/${USER_ID}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -60,13 +62,11 @@ return (
                          {`Payer le ${format(checkoutDate, 'dd/MM/yy')} à ${format(checkoutDate, 'HH:mm')}`}
                       </Text>
                       <Text style={styles.paymentLabel}>Articles : </Text>
-                           {item.purchased_items.map( i => {
-                          return <Text style={styles.paymentValue}> • {i.amount} {i.item.name} </Text>
-                              
-                            
-                            })}
-
-
+                                  {item.purchased_items.map((i, index) => (
+                                  <Text key={index} style={styles.paymentValue}>
+                                              • {i.amount} {i.item.name}
+                                  </Text>
+                                     ))}
           </View>
         );
       }}

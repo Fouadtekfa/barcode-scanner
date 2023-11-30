@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Button, ScrollView,TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import * as SQLite from 'expo-sqlite';
+import Constants from "expo-constants";
 
 
 const db = SQLite.openDatabase('cart1.db');
@@ -10,7 +11,7 @@ export default function Cart({ navigation }: any) {
     const [Cart, setCart] = useState<
         { id: string; name: string; price: number; quantite: number }[]
     >([]);
-    const API_URL = "http://192.168.1.62:8080";
+    const API_URL = Constants.expoConfig.extra.apiUrl;
     useEffect(() => {
         db.transaction(tx => {
             tx.executeSql(

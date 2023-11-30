@@ -3,9 +3,10 @@ import { Text, View, StyleSheet, Button, TextInput } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import * as SQLite from 'expo-sqlite';
 import { useNavigation } from '@react-navigation/native';
+import Constants from "expo-constants";
 
 const db = SQLite.openDatabase('cart1.db');
-const API_URL = "http://192.168.1.62:8080";
+const API_URL = Constants.expoConfig.extra.apiUrl;
 
 export default function Scan() {
     const [hasPermission, setHasPermission] = useState(null);

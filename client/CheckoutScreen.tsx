@@ -4,41 +4,18 @@ import React, { useEffect, useState } from "react";
 import { Alert, Text, Button, SafeAreaView, View } from "react-native";
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('cart1.db');
+import { USER_ID } from "@env";
+
 export default function CheckoutScreen() {
     const { initPaymentSheet, presentPaymentSheet } = useStripe();
     const [loading, setLoading] = useState(false);
     const [paymentIntentId, setPaymentIntentId] = useState<string>("");
 
-    const apiUrl = Constants.expoConfig.extra.apiUrl;
-
-    const userId = "cus_OxAC1UaHHGdw7b";
-    /*const items = [
-        {
-            "id": 1,
-            "amount": 2
-        }
-    ];*/
-   
+    const apiUrl =Constants.expoConfig.extra.apiUrl;
     
+    const userId =USER_ID;
     const fetchPaymentSheetParams = async () => {
         let tableau = [];
-       // console.log(tableau);
-        /*
-       await db.transaction(tx => {
-                tx.executeSql('SELECT * FROM cart', [], (_, { rows }) => {
-                const localCart = rows._array;
-             console.log(localCart);
-                tableau = localCart.map( i => {
-                    return {
-                      id: i.id,
-                      amount: i.quantite
-                  }
-                  });
-                  console.log("hola");
-                  console.log(tableau)
-            });
-
-        });*/
         await new Promise((resolve, reject) => {
             db.transaction(tx => {
                 tx.executeSql('SELECT * FROM cart', [], (_, { rows }) => {
@@ -50,14 +27,11 @@ export default function CheckoutScreen() {
                             amount: i.quantite
                         }
                     });
-                    //console.log("hola");
-                    //console.log(tableau);
-                    resolve(); // Indique que la transaction est terminée
+                    resolve(); 
                 });
             });
         });
-           // console.log("qulques chose")
-         //   console.log(tableau); 
+      
         
 
 
@@ -129,6 +103,7 @@ export default function CheckoutScreen() {
     };
 
     useEffect(() => {
+        console.log(userId)
         initializePaymentSheet();
     }, []);
 
