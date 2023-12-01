@@ -1,8 +1,8 @@
 # Barcode Scanner
 
-|   Nom   | Prénom |
-|---------|--------|
-|   Doe   |  Jane  |
+|   Nom   | Prénom |Group 
+|---------|--------|--------|
+|   TEKFA   |  Fouad  | A 
 
 Le TP est à réaliser individuellement.
 

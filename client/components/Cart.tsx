@@ -5,6 +5,7 @@ import * as SQLite from 'expo-sqlite';
 import Constants from "expo-constants";
 import { useTheme } from './ThemeContext'; 
 import { useCartContext } from './CartContext'; 
+import CheckoutScreen from '../CheckoutScreen';
 
 const db = SQLite.openDatabase('cart1.db');
 
@@ -155,7 +156,7 @@ export default function Cart({ navigation }: any) {
                     </View>
                 ))}
             </ScrollView>
-            
+            <CheckoutScreen />
         </View>
         
     );

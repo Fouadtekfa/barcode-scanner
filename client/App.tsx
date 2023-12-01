@@ -15,7 +15,7 @@ export default function App() {
     publishableKey={stripePK}
     merchantIdentifier="merchant.com.example"
   >
-     <CheckoutScreen />
+   
      <MainTabNavigator />
      </StripeProvider>
 

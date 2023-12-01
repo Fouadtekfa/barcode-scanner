@@ -1,7 +1,7 @@
 import { useStripe } from "@stripe/stripe-react-native";
 import Constants from "expo-constants";
 import React, { useEffect, useState } from "react";
-import { Alert, Text, Button, SafeAreaView, View } from "react-native";
+import { Alert, Text, Button, SafeAreaView, View ,StyleSheet, TouchableOpacity} from "react-native";
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('cart1.db');
 import { USER_ID } from "@env";
@@ -109,13 +109,35 @@ export default function CheckoutScreen() {
     }, [cartItems]);
 
     return (
-        <SafeAreaView>
-            <Text>Payment</Text>
-            <Button 
-                disabled={!loading}
-                title="Checkout"
-                onPress={openPaymentSheet }
-            />
-        </SafeAreaView>
+        <SafeAreaView style={styles.container}>
+        <TouchableOpacity
+            style={styles.payButton}
+            disabled={!loading}
+            onPress={openPaymentSheet}
+        >
+            <Text style={styles.buttonText}>Payer</Text>
+        </TouchableOpacity>
+    </SafeAreaView>
+
     );
 }
+const styles = StyleSheet.create({
+    container: {
+        flex: 0.15,
+        justifyContent: 'center',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        paddingBottom: 10,
+    },
+    payButton: {
+        backgroundColor: '#4CAF50', 
+        padding: 15,
+        borderRadius: 10, 
+    },
+    buttonText: {
+        color: 'white', // Couleur du texte
+        fontSize: 25,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+});
