@@ -5,14 +5,16 @@ import { Alert, Text, Button, SafeAreaView, View } from "react-native";
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('cart1.db');
 import { USER_ID } from "@env";
+import { useCartContext } from './components/CartContext';
 
 export default function CheckoutScreen() {
+  
     const { initPaymentSheet, presentPaymentSheet } = useStripe();
     const [loading, setLoading] = useState(false);
     const [paymentIntentId, setPaymentIntentId] = useState<string>("");
 
     const apiUrl =Constants.expoConfig.extra.apiUrl;
-    
+    const { cartItems } = useCartContext();
     const userId =USER_ID;
     const fetchPaymentSheetParams = async () => {
         let tableau = [];
@@ -80,7 +82,7 @@ export default function CheckoutScreen() {
     };
 
     const openPaymentSheet = async () => {
-        await initializePaymentSheet();
+         //initializePaymentSheet();
         const { error } = await presentPaymentSheet();
 
         if (error) {
@@ -102,10 +104,9 @@ export default function CheckoutScreen() {
        
     };
 
-    useEffect(() => {
-        console.log(userId)
-        initializePaymentSheet();
-    }, []);
+    useEffect(() => {    
+        initializePaymentSheet();         
+    }, [cartItems]);
 
     return (
         <SafeAreaView>

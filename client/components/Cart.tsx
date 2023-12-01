@@ -3,11 +3,13 @@ import { Text, View, StyleSheet, Button, ScrollView,TouchableOpacity } from "rea
 import Icon from "react-native-vector-icons/MaterialIcons";
 import * as SQLite from 'expo-sqlite';
 import Constants from "expo-constants";
-
+import { useTheme } from './ThemeContext'; 
+import { useCartContext } from './CartContext'; 
 
 const db = SQLite.openDatabase('cart1.db');
 
 export default function Cart({ navigation }: any) {
+    const { setCartItems } = useCartContext();
     const [Cart, setCart] = useState<
         { id: string; name: string; price: number; quantite: number }[]
     >([]);
@@ -33,7 +35,10 @@ export default function Cart({ navigation }: any) {
         };
     }, [navigation]);
 
-
+    const updateCartContext = (newCartItems) => {
+        setCartItems(newCartItems); // Mise a jour du panier
+        setCart(newCartItems);
+    };
     const fetchItemsFromServer = async () => {
         try {
             const response = await fetch(`${API_URL}/items`);
@@ -68,8 +73,16 @@ export default function Cart({ navigation }: any) {
     const updateProductQuantityInLocalDB = (itemId: number, quantite: number) => {
         db.transaction(tx => {
             tx.executeSql(
+                
                 'INSERT OR REPLACE INTO cart (id, quantite) VALUES (?, ?)',
-                [itemId, quantite]
+                [itemId, quantite],
+                () => {
+                    // Mettre à jour le contexte après la mise à jour de la base de données
+                    const updatedCartItems = Cart.map(item =>
+                        item.id === itemId ? { ...item, quantite } : item
+                    );
+                   updateCartContext(updatedCartItems);
+                }
             );
         });
     };
@@ -91,20 +104,29 @@ export default function Cart({ navigation }: any) {
     };
 
     const retirerProduit = (itemId: number) => {
-        const updatedCart = Cart.filter(item => item.id !== itemId);
         db.transaction(tx => {
-            tx.executeSql('DELETE FROM cart WHERE id = ?', [itemId]);
+            tx.executeSql('DELETE FROM cart WHERE id = ?', [itemId], () => {
+                // Mettre à jour après la suppression d'un article
+                const updatedCartItems = Cart.filter(item => item.id !== itemId);
+                updateCartContext(updatedCartItems);
+            });
         });
-        setCart(updatedCart);
     };
-
-  
+    const { theme } = useTheme();
+    React.useEffect(() => {
+        navigation.setOptions({
+            headerStyle: {
+                backgroundColor: theme === 'light' ? '#fff' : '#34363B',
+            },
+            headerTintColor: theme === 'light' ? '#000' : '#fff',
+        });
+    }, [theme, navigation]); 
     return (
-      <View style={styles.container}>
+         <View style={[styles.container, { backgroundColor: theme === 'light' ? '#fff' : '#333' }]}>
             <ScrollView style={styles.scrollView}>
                 {Cart.filter(item => item.quantite > 0).map((item) => (
                     <View style={styles.itemContainer} key={item.id}>
-                        <Text style={styles.itemName}>{item.name}</Text>
+                        <Text style={[styles.itemName, { color: theme === 'light' ? '#000' : '#fff' }]}>{item.name}</Text>
                         <View style={styles.itemQuantityContainer}>
                             <Icon
                                 name="remove"

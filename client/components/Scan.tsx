@@ -4,6 +4,7 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 import * as SQLite from 'expo-sqlite';
 import { useNavigation } from '@react-navigation/native';
 import Constants from "expo-constants";
+import { useTheme } from './ThemeContext';
 
 const db = SQLite.openDatabase('cart1.db');
 const API_URL = Constants.expoConfig.extra.apiUrl;
@@ -13,10 +14,19 @@ export default function Scan() {
     const [scanned, setScanned] = useState(false);
     const [manualBarcode, setManualBarcode] = useState('');
     const navigation = useNavigation();
+    const { theme } = useTheme();
 
     const handleManualBarcodeInput = (text) => {
       setManualBarcode(text);
     };
+    React.useEffect(() => {
+        navigation.setOptions({
+            headerStyle: {
+                backgroundColor: theme === 'light' ? '#fff' : '#34363B',
+            },
+            headerTintColor: theme === 'light' ? '#000' : '#fff',
+        });
+    }, [theme, navigation]); 
 
     useEffect(() => {
         (async () => {
@@ -118,14 +128,24 @@ export default function Scan() {
 
     if (hasPermission === false) {
         return (
-            <View style={styles.container}>
-                <Text>Pas d'accès à la caméra</Text>
+            <View style={[styles.container, { backgroundColor: theme === 'light' ? '#fff' : '#333' }]}>
+                <Text style={{ color: theme === 'light' ? '#000' : '#fff' }}>
+                    Pas d'accès à la caméra</Text>
                 <TextInput
-                    style={[styles.input, { textAlign: 'center' }]}
+                     style={[
+                        styles.input, 
+                        { 
+                            borderColor: theme === 'light' ? '#ccc' : '#666', 
+                            color: theme === 'light' ? '#000' : '#fff', 
+                            backgroundColor: theme === 'light' ? '#eee' : '#555', 
+                        }
+                    ]}
                     placeholder="insérez le code-barres de l'article"
+                    placeholderTextColor={theme === 'light' ? '#666' : '#bbb'} // couleur du placeholder
                     value={manualBarcode}
                     onChangeText={handleManualBarcodeInput}
                     keyboardType="numeric"
+                
                 />
                 <Button
                     title="ajoutez l'article au panier"
@@ -138,9 +158,10 @@ export default function Scan() {
             </View>
         );
     }
+    
 
     return (
-        <View style={styles.container}>
+         <View style={[styles.container, { backgroundColor: theme === 'light' ? '#fff' : '#333' }]}> 
             
          
         {scanned ? 
@@ -162,14 +183,15 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        width: '80%',
-        marginHorizontal: '10%',
+      
+       
     },
     input: {
         width: '90%',
         height: 50,
-        borderColor: '#ccc',
         borderWidth: 1,
         marginBottom: 10,
+        textAlign: 'center', 
     },
+    
 });
