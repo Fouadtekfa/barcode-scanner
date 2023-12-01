@@ -23,14 +23,18 @@ export default function Home() {
 
     return (
         <View style={[styles.container, { backgroundColor: theme === 'light' ? '#fff' : '#34363B' }]}>
+            <Text style={{ textAlign: 'center', color: theme === 'light' ? '#000' : '#fff', marginTop: 10 }}>
+            En cliquant sur le bouton, vous pouvez changer de mode 
+        </Text>
             <Text style={{ color: theme === 'light' ? '#000' : '#fff' }}></Text>
             <TouchableOpacity 
                 style={[styles.button, theme === 'light' ? styles.lightThemeButton : styles.darkThemeButton]} 
                 onPress={toggleTheme}
             >
                 <Text style={[styles.buttonText, theme === 'light' ? styles.lightThemeText : styles.darkThemeText]}>
-                    {theme === 'light' ? 'Mode nuit' : 'Mode jour'}
+                    {theme === 'light' ? 'Activer le mode nuit' : 'Activer le mode jour'}
                 </Text>
+                
             </TouchableOpacity>
         </View>
     );
@@ -50,7 +54,7 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     lightThemeButton: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#6F69BB',
     },
     darkThemeButton: {
         backgroundColor: '#000000',

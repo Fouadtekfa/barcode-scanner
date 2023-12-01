@@ -11,6 +11,9 @@ const db = SQLite.openDatabase('cart1.db');
 
 export default function Cart({ navigation }: any) {
     const { setCartItems } = useCartContext();
+    const [isCheckoutEnabled, setIsCheckoutEnabled] = useState(true);
+
+
     const [Cart, setCart] = useState<
         { id: string; name: string; price: number; quantite: number }[]
     >([]);
@@ -35,6 +38,19 @@ export default function Cart({ navigation }: any) {
             unsubscribe();
         };
     }, [navigation]);
+  
+    useEffect(() => {
+        // mise a  jour  
+        updateCartContext(Cart);
+
+        // Désactiver le bouton de paiement pendant 1000 ms 
+        setIsCheckoutEnabled(false);
+        const timeoutId = setTimeout(() => {
+            setIsCheckoutEnabled(true);
+        }, 1000); 
+
+        return () => clearTimeout(timeoutId);
+    }, [Cart]);
 
     const updateCartContext = (newCartItems) => {
         setCartItems(newCartItems); // Mise a jour du panier
@@ -156,7 +172,7 @@ export default function Cart({ navigation }: any) {
                     </View>
                 ))}
             </ScrollView>
-            <CheckoutScreen />
+            {isCheckoutEnabled && <CheckoutScreen />}
         </View>
         
     );

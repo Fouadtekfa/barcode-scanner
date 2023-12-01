@@ -20,4 +20,4 @@ Lancement de l'application :
 API_URL={API_URL} STRIPE_PK={STRIPE_PK} npm run android
 ```
 
-La clé publique `STRIPE_PK` est disponible depuis le dashboard de Stripe.
+La clé publique `STRIPE_PK` est disponible depuis le dashboard de Stripe.:q

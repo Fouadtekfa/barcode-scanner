@@ -1,6 +1,6 @@
 # Barcode Scanner
 
-|   Nom   | Prénom |Group 
+|   Nom   | Prénom |Groupe 
 |---------|--------|--------|
 |   TEKFA   |  Fouad  | A 
 
