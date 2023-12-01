@@ -4,7 +4,9 @@ import format from 'date-fns/format';
 import Constants from "expo-constants";
 import { USER_ID } from "@env";
 import { useTheme } from './ThemeContext';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation ,useFocusEffect } from '@react-navigation/native';
+
+
 
 const History = () => {
     const [payments, setPayments] = useState([]);
@@ -51,10 +53,12 @@ const History = () => {
             setRefreshing(false);
         }
     }, []);
-
-    useEffect(() => {
-        getPayments();
-    }, []);
+    
+    useFocusEffect(
+        React.useCallback(() => {
+            getPayments();
+        }, [])
+    );
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: theme === 'light' ? '#BCD8DC' : '#333' }]}>
