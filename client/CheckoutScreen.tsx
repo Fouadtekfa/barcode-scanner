@@ -5,7 +5,7 @@ import { Alert, Text, Button, SafeAreaView, View ,StyleSheet, TouchableOpacity} 
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('cart1.db');
 import { USER_ID } from "@env";
-import { useCartContext } from './components/CartContext';
+import { useCartContext } from './contexts/CartContext';
 
 export default function CheckoutScreen() {
   
@@ -22,7 +22,7 @@ export default function CheckoutScreen() {
             db.transaction(tx => {
                 tx.executeSql('SELECT * FROM cart', [], (_, { rows }) => {
                     const localCart = rows._array;
-                    console.log(localCart);
+                   // console.log(localCart);
                     tableau = localCart.map(i => {
                         return {
                             id: i.id,

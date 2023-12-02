@@ -1,9 +1,8 @@
 import { StripeProvider } from '@stripe/stripe-react-native';
 import Constants from 'expo-constants';
-import CheckoutScreen from './CheckoutScreen';
 import MainTabNavigator from './components/TabNavigator';
-import { ThemeProvider } from './components/ThemeContext'; 
-import { CartProvider } from './components/CartContext'; 
+import { ThemeProvider } from './contexts/ThemeContext'; 
+import { CartProvider } from './contexts/CartContext'; 
 
 export default function App() {
   const stripePK = Constants.expoConfig.extra.stripePK;

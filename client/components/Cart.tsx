@@ -3,8 +3,8 @@ import { Text, View, StyleSheet, Button, ScrollView,TouchableOpacity } from "rea
 import Icon from "react-native-vector-icons/MaterialIcons";
 import * as SQLite from 'expo-sqlite';
 import Constants from "expo-constants";
-import { useTheme } from './ThemeContext'; 
-import { useCartContext } from './CartContext'; 
+import { useTheme } from '../contexts/ThemeContext'; 
+import { useCartContext } from '../contexts/CartContext'; 
 import CheckoutScreen from '../CheckoutScreen';
 
 const db = SQLite.openDatabase('cart1.db');

@@ -3,7 +3,7 @@ import { SafeAreaView, StyleSheet, FlatList, Text, View, RefreshControl } from '
 import format from 'date-fns/format';
 import Constants from "expo-constants";
 import { USER_ID } from "@env";
-import { useTheme } from './ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { useNavigation ,useFocusEffect } from '@react-navigation/native';
 
 
@@ -53,7 +53,7 @@ const History = () => {
             setRefreshing(false);
         }
     }, []);
-    
+
     useFocusEffect(
         React.useCallback(() => {
             getPayments();

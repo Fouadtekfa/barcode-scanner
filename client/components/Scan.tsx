@@ -4,7 +4,7 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 import * as SQLite from 'expo-sqlite';
 import { useNavigation } from '@react-navigation/native';
 import Constants from "expo-constants";
-import { useTheme } from './ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 const db = SQLite.openDatabase('cart1.db');
 const API_URL = Constants.expoConfig.extra.apiUrl;

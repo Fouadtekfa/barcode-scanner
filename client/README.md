@@ -18,7 +18,6 @@ Avant de lancer l'application, assurez-vous de suivre attentivement ces étapes 
    USER_ID=1254582568
    ```
 
-La clé publique `STRIPE_PK` est disponible depuis le dashboard de Stripe.:q
    Remplacez `1254582568` par l'ID utilisateur réel 
 
 3. **Adresse IP :**

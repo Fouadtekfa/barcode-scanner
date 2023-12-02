@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from './ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 import Home from './index';
 import Scan from './Scan';
